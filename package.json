@@ -1,0 +1,19 @@
+{
+  "name": "feathersjs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "nodemon app.js",
+    "dev:client": "live-server"
+  },
+  "dependencies": {
+    "@feathersjs/express": "^4.3.11",
+    "@feathersjs/feathers": "^4.3.11",
+    "@feathersjs/socketio": "^4.3.11",
+    "concurrently": "^5.0.0",
+    "liveserver": "^0.1.20",
+    "nodemon": "^2.0.1"
+  }
+}

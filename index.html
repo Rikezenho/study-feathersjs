@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        
+    </style>
+    <title>Feathers JS</title>
+</head>
+<body>
+    <h1>Livestream Project Ideas</h1>
+    <form action="#" id="form">
+        Text:<br/>
+        <input type="text" class="idea-text">
+        <br/><br/>
+        Tech:<br/>
+        <input type="text" class="idea-tech">
+        <br/><br/>
+        Viewer:<br/>
+        <input type="text" class="idea-viewer">
+        <br/><br/>
+        <input type="submit" value="Enviar">
+    </form>
+    <h2>Ideas</h2>
+    <ul class="ideas"></ul>
+
+    <script src="https://unpkg.com/@feathersjs/client@^4.3.0/dist/feathers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000')
+
+        const app = feathers()
+
+        app.configure(feathers.socketio(socket))
+
+        document.querySelector('#form').addEventListener('submit', (e) => {
+            e.preventDefault()
+            sendIdea()
+        })
+
+        async function sendIdea() {
+            const text = document.querySelector('.idea-text')
+            const tech = document.querySelector('.idea-tech')
+            const viewer = document.querySelector('.idea-viewer')
+
+            app.service('ideas').create({
+                text: text.value,
+                tech: tech.value,
+                viewer: viewer.value
+            })
+
+            text.value = ''
+            tech.value = ''
+            viewer.value = ''
+        }
+
+        function renderIdea(idea) {
+            document.querySelector('.ideas').innerHTML += `
+                <li>
+                    <strong>Text:</strong> ${idea.text}<br/>
+                    <strong>Tech:</strong> ${idea.tech}<br/>
+                    <strong>Viewer:</strong> ${idea.viewer}<br/>
+                </li>
+            `
+        }
+
+        async function init() {
+            const ideas = await app.service('ideas').find()
+            ideas.forEach(item => renderIdea(item))
+
+            app.service('ideas').on('created', renderIdea)
+        }
+
+        init()
+    </script>
+</body>
+</html>
